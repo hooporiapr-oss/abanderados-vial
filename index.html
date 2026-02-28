@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abanderados Vial de Puerto Rico</title>
+  <meta name="description" content="Asistente bilingüe de seguridad vial para zonas de trabajo en Puerto Rico. Bilingual roadway work zone safety assistant.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --deep: #0f1114;
+      --surface: #161a1f;
+      --card: #1c2127;
+      --orange: #FF6B00;
+      --orange-light: #FF9F45;
+      --yellow: #FFD600;
+      --white: #F2F2F2;
+      --muted: #8A919A;
+      --gradient: linear-gradient(135deg, #FF6B00, #FFD600);
+      --radius: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--deep);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* === CAUTION STRIPE TOP === */
+    .caution-stripe {
+      width: 100%;
+      height: 8px;
+      background: repeating-linear-gradient(
+        -45deg,
+        var(--yellow),
+        var(--yellow) 12px,
+        #111 12px,
+        #111 24px
+      );
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 200;
+    }
+
+    /* === BACKGROUND === */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(255,107,0,.05) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 100%, rgba(255,214,0,.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-orb {
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      filter: blur(160px);
+      opacity: 0.08;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-orb.orange { background: var(--orange); top: -150px; left: 50%; transform: translateX(-50%); }
+    .glow-orb.yellow { background: var(--yellow); bottom: -200px; right: -100px; opacity: 0.05; }
+
+    /* === LANGUAGE TOGGLE === */
+    .lang-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 150;
+      display: flex;
+      background: var(--surface);
+      border: 1px solid rgba(255,107,0,.15);
+      border-radius: 50px;
+      overflow: hidden;
+    }
+    .lang-btn {
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .2s ease;
+      font-family: 'Inter', sans-serif;
+    }
+    .lang-btn.active {
+      background: var(--gradient);
+      color: var(--deep);
+    }
+
+    /* === HERO === */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+    }
+
+    /* === SAFETY ICON === */
+    .safety-icon {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: rgba(255,107,0,.1);
+      border: 2px solid rgba(255,107,0,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      margin-bottom: 28px;
+      animation: fadeInDown .6s ease;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      border-radius: 50px;
+      background: rgba(255,107,0,.08);
+      border: 1px solid rgba(255,107,0,.15);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--orange);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      animation: fadeInUp .6s ease .1s both;
+    }
+    .badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ADE80;
+      box-shadow: 0 0 8px #4ADE80;
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .4; }
+    }
+
+    .hero-title {
+      font-size: clamp(28px, 6vw, 48px);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 8px;
+      animation: fadeInUp .6s ease .2s both;
+    }
+    .hero-title .accent {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(13px, 2.5vw, 16px);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 32px;
+      font-weight: 500;
+      animation: fadeInUp .6s ease .3s both;
+    }
+
+    .hero-desc {
+      max-width: 560px;
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--muted);
+      font-weight: 300;
+      margin-bottom: 48px;
+      animation: fadeInUp .6s ease .4s both;
+    }
+
+    /* === FEATURES === */
+    .features {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px 24px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      padding: 28px 24px;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid rgba(255,107,0,.06);
+      transition: all .3s ease;
+    }
+    .feature-card:hover {
+      border-color: rgba(255,107,0,.15);
+      transform: translateY(-4px);
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+      background: rgba(255,107,0,.08);
+    }
+
+    .feature-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .feature-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    /* === DISCLAIMER === */
+    .disclaimer {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+      text-align: center;
+    }
+    .disclaimer-box {
+      padding: 20px 24px;
+      border-radius: var(--radius);
+      background: rgba(255,214,0,.04);
+      border: 1px solid rgba(255,214,0,.1);
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    /* === FOOTER === */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid rgba(255,107,0,.06);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* === ELEVENLABS WIDGET === */
+    elevenlabs-convai {
+      position: fixed !important;
+      bottom: 24px !important;
+      right: 24px !important;
+      left: auto !important;
+      top: auto !important;
+      z-index: 999 !important;
+    }
+
+    /* === LANGUAGE CONTENT === */
+    .lang-es { display: block; }
+    .lang-en { display: none; }
+    body.en .lang-es { display: none; }
+    body.en .lang-en { display: block; }
+
+    /* === ANIMATIONS === */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 70px 20px 40px; }
+      .hero-desc { font-size: 15px; }
+      .features { padding: 20px 20px 60px; }
+      .feature-card { padding: 24px 20px; }
+      .safety-icon { width: 80px; height: 80px; font-size: 38px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="caution-stripe"></div>
+  <div class="glow-orb orange"></div>
+  <div class="glow-orb yellow"></div>
+
+  <!-- Language Toggle -->
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btnES" onclick="setLang('es')">ES</button>
+    <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+
+    <div class="safety-icon">🚧</div>
+
+    <div class="badge">
+      <span class="lang-es">Agente de Voz — Activo</span>
+      <span class="lang-en">Voice Agent — Live</span>
+    </div>
+
+    <h1 class="hero-title">
+      <span class="accent">Abanderados Vial</span><br>
+      <span class="lang-es">de Puerto Rico</span>
+      <span class="lang-en">of Puerto Rico</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      <span class="lang-es">Seguridad Vial en Zonas de Trabajo</span>
+      <span class="lang-en">Roadway Work Zone Safety</span>
+    </p>
+
+    <p class="hero-desc">
+      <span class="lang-es">
+        Tu asistente bilingüe de seguridad vial para zonas de trabajo en Puerto Rico. Orientación sobre prácticas seguras, prevención de riesgos, control de tránsito y situaciones que requieren atención especial. Siempre alineado con los principios del MUTCD.
+      </span>
+      <span class="lang-en">
+        Your bilingual roadway work zone safety assistant for Puerto Rico. Guidance on safe practices, risk prevention, traffic control, and situations requiring special attention. Always aligned with MUTCD principles.
+      </span>
+    </p>
+
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="feature-card">
+      <div class="feature-icon">🦺</div>
+      <div class="feature-title">
+        <span class="lang-es">Seguridad en Zona de Trabajo</span>
+        <span class="lang-en">Work Zone Safety</span>
+      </div>
+      <p class="feature-text">
+        <span class="lang-es">Orientación sobre prácticas seguras, identificación de riesgos, y protección para trabajadores y el público en zonas viales activas.</span>
+        <span class="lang-en">Guidance on safe practices, risk identification, and protection for workers and the public in active roadway work zones.</span>
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚦</div>
+      <div class="feature-title">
+        <span class="lang-es">Control de Tránsito</span>
+        <span class="lang-en">Traffic Control</span>
+      </div>
+      <p class="feature-text">
+        <span class="lang-es">Información sobre señalización, dispositivos de canalización, y cuándo el control humano del tránsito puede ser necesario.</span>
+        <span class="lang-en">Information on signage, channelization devices, and when human traffic control (flaggers) may be necessary.</span>
+      </p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📋</div>
+      <div class="feature-title">
+        <span class="lang-es">Cumplimiento y Prevención</span>
+        <span class="lang-en">Compliance & Prevention</span>
+      </div>
+      <p class="feature-text">
+        <span class="lang-es">Orientación alineada con MUTCD y principios de seguridad ocupacional reconocidos. Prevención sobre reacción.</span>
+        <span class="lang-en">Guidance aligned with MUTCD and recognized occupational safety principles. Prevention over reaction.</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- Disclaimer -->
+  <section class="disclaimer">
+    <div class="disclaimer-box">
+      <span class="lang-es">
+        Este asistente ofrece orientación informativa y educativa. No sustituye reglamentos oficiales, políticas patronales, ni asesoría legal. Siempre consulte con supervisores y personal competente para decisiones específicas en su proyecto.
+      </span>
+      <span class="lang-en">
+        This assistant provides informational and educational guidance. It does not replace official regulations, employer policies, or legal advice. Always consult with supervisors and competent personnel for project-specific decisions.
+      </span>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div>Abanderados Vial de Puerto Rico 🇵🇷</div>
+  </footer>
+
+  <!-- ElevenLabs Voice Widget -->
+  <!-- REPLACE AGENT_ID_HERE with your ElevenLabs agent ID -->
+  <elevenlabs-convai agent-id="AGENT_ID_HERE"></elevenlabs-convai>
+  <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+
+  <!-- Language Toggle Script -->
+  <script>
+    function setLang(lang) {
+      if (lang === 'en') {
+        document.body.classList.add('en');
+        document.getElementById('btnEN').classList.add('active');
+        document.getElementById('btnES').classList.remove('active');
+        document.documentElement.lang = 'en';
+      } else {
+        document.body.classList.remove('en');
+        document.getElementById('btnES').classList.add('active');
+        document.getElementById('btnEN').classList.remove('active');
+        document.documentElement.lang = 'es';
+      }
+    }
+  </script>
+
+</body>
+</html>
