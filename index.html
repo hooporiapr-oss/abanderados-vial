@@ -299,13 +299,10 @@
   </section>
 
   <!-- Browser Detection Popup -->
-  <div id="browserWarning" style="display:none;position:fixed;bottom:80px;right:24px;z-index:998;max-width:300px;padding:16px 20px;border-radius:var(--radius);background:var(--card);border:1px solid rgba(255,214,0,.2);box-shadow:0 8px 32px rgba(0,0,0,.4);font-size:13px;line-height:1.6;color:var(--muted);">
-    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
-      <span style="font-weight:700;color:var(--yellow);font-size:14px;">📱</span>
-      <span id="closeBrowserWarning" style="cursor:pointer;color:var(--muted);font-size:18px;line-height:1;">&times;</span>
-    </div>
-    <span class="lang-es">Para la mejor experiencia de voz, recomendamos usar <strong style="color:var(--white);">Safari</strong> en dispositivos móviles. Chrome y Edge pueden mostrar un error al iniciar la llamada.</span>
-    <span class="lang-en">For the best voice experience, we recommend using <strong style="color:var(--white);">Safari</strong> on mobile devices. Chrome and Edge may show an error when starting the call.</span>
+  <div id="browserWarning" style="display:none;position:fixed;bottom:24px;right:24px;z-index:998;max-width:300px;padding:20px 24px;border-radius:var(--radius);background:var(--card);border:2px solid var(--yellow);box-shadow:0 8px 32px rgba(0,0,0,.5);font-size:14px;line-height:1.7;color:var(--white);text-align:center;">
+    <div style="font-size:32px;margin-bottom:8px;">📱</div>
+    <span class="lang-es"><strong style="color:var(--yellow);">Abre esta página en Safari</strong><br>para activar el asistente de voz.<br><span style="font-size:12px;color:var(--muted);margin-top:8px;display:block;">Copia el enlace: viasegura.zone<br>y ábrelo en Safari</span></span>
+    <span class="lang-en"><strong style="color:var(--yellow);">Open this page in Safari</strong><br>to activate the voice assistant.<br><span style="font-size:12px;color:var(--muted);margin-top:8px;display:block;">Copy the link: viasegura.zone<br>and open it in Safari</span></span>
   </div>
 
   <footer>
@@ -354,18 +351,25 @@
       });
     }
 
-    // Browser Detection - show Safari warning immediately on Chrome/Edge mobile
+    // Browser Detection - hide widget on Chrome/Edge mobile, show Safari message
     (function() {
       var ua = navigator.userAgent;
       var isChrome = /Chrome/.test(ua) && !/Edg/.test(ua);
       var isEdge = /Edg/.test(ua);
 
       if ((isChrome || isEdge) && /Mobi|Android/i.test(ua)) {
+        // Hide the ElevenLabs widget completely
+        var widget = document.querySelector('elevenlabs-convai');
+        if (widget) widget.style.display = 'none';
+        // Show the Safari warning
         document.getElementById('browserWarning').style.display = 'block';
       }
 
-      document.getElementById('closeBrowserWarning').addEventListener('click', function() {
-        document.getElementById('browserWarning').style.display = 'none';
+      document.addEventListener('click', function(e) {
+        var warning = document.getElementById('browserWarning');
+        if (warning && !warning.contains(e.target)) {
+          warning.style.display = 'none';
+        }
       });
     })();
   </script>
