@@ -354,25 +354,14 @@
       });
     }
 
-    // Browser Detection - show Safari warning on Chrome/Edge mobile
+    // Browser Detection - show Safari warning immediately on Chrome/Edge mobile
     (function() {
       var ua = navigator.userAgent;
       var isChrome = /Chrome/.test(ua) && !/Edg/.test(ua);
       var isEdge = /Edg/.test(ua);
-      var warned = false;
 
       if ((isChrome || isEdge) && /Mobi|Android/i.test(ua)) {
-        document.addEventListener('click', function(e) {
-          if (warned) return;
-          var widget = document.querySelector('elevenlabs-convai');
-          if (!widget) return;
-          var rect = widget.getBoundingClientRect();
-          var buffer = 80;
-          if (e.clientX >= rect.left - buffer && e.clientX <= rect.right + buffer && e.clientY >= rect.top - buffer && e.clientY <= rect.bottom + buffer) {
-            document.getElementById('browserWarning').style.display = 'block';
-            warned = true;
-          }
-        });
+        document.getElementById('browserWarning').style.display = 'block';
       }
 
       document.getElementById('closeBrowserWarning').addEventListener('click', function() {
